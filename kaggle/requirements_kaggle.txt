@@ -1,0 +1,54 @@
+# =====================================================================
+# ER-MAP — Kaggle Free-Tier Training Requirements
+# =====================================================================
+# Kaggle's GPU base image already ships with:
+#   - torch 2.x + CUDA 12.x
+#   - transformers
+#   - accelerate
+#   - peft
+#   - bitsandbytes
+#   - datasets
+# We only install what's missing or pinned-low. Order matters:
+# install unsloth LAST because it pins specific versions of xformers /
+# triton that should not be overwritten by other packages.
+# =====================================================================
+
+# --- Environment / RL plumbing ---
+gymnasium>=0.29.0
+openenv-core>=0.1.0
+
+# --- Per-step LLM API calls (Nurse / Patient / Judges via Groq) ---
+groq>=0.18.0
+
+# --- Logging ---
+wandb>=0.17.0
+
+# --- Hugging Face Hub push (so the trained adapter survives the 12h
+#     Kaggle session limit) ---
+huggingface_hub>=0.25.0
+
+# --- Training stack: install Unsloth LAST. Unsloth's setup pins exact
+#     versions of bitsandbytes / xformers / triton matched to the
+#     Kaggle CUDA image, and re-installing those after Unsloth tends
+#     to break the build. ---
+unsloth==2024.12.4
+trl>=0.11.0,<0.15.0
+#     versions of bitsandbytes / xformers / triton matched to the
+#     Kaggle CUDA image, and re-installing those after Unsloth tends
+#     to break the build.
+#
+#     IMPORTANT: do NOT pin `unsloth` to an old version. `unsloth` and
+#     `unsloth_zoo` are released as a matched pair — if pip pulls a
+#     fresh `unsloth_zoo` against an old `unsloth`, you get:
+#         ImportError: cannot import name 'create_gradient_checkpointing_buffer'
+#     We list both packages explicitly so pip resolves the latest
+#     compatible pair from one wheel index in one resolve pass. The
+#     install cell in the notebook adds `--upgrade` to force-update
+#     both whenever Kaggle's pre-baked layer is older than what we
+#     need. ---
+unsloth>=2025.3.0
+unsloth_zoo>=2025.3.0
+# NOTE: do NOT pin trl below 0.18 — recent unsloth releases (2026.x) require
+# trl >= 0.18.2 for the new GRPO interface. Pinning trl<0.15.0 forces pip to
+# silently downgrade `unsloth` to 2025.10.x, losing the latest fast-path.
+trl>=0.18.2
