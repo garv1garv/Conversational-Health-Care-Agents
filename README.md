@@ -19,7 +19,6 @@ license: mit
 [![Groq](https://img.shields.io/badge/Groq-Inference-a855f7?style=for-the-badge)](https://groq.com)
 [![Gymnasium](https://img.shields.io/badge/Gymnasium-Environment-ef4444?style=for-the-badge)](https://gymnasium.farama.org/)
 
-Built for the **[Meta × PyTorch OpenEnv Hackathon — April 2026](https://pytorch.org/blog/openenv/)**
 
 [📺 Demo Video](https://www.youtube.com/watch?v=hL7n5TU7Bm4) · [📖 Engineering Blog](./blog.md) · [🤗 Live HF Space](https://huggingface.co/spaces/garv1garv/Conversational-Health-Care-Agents)
 
