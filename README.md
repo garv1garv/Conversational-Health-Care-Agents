@@ -21,7 +21,7 @@ license: mit
 
 Built for the **[Meta × PyTorch OpenEnv Hackathon — April 2026](https://pytorch.org/blog/openenv/)**
 
-[📺 Demo Video](https://www.youtube.com/watch?v=hL7n5TU7Bm4) · [📖 Engineering Blog](./blog.md) · [🤗 Live HF Space](https://huggingface.co/spaces/Uddiii/Multi-Agentic) · [📓 Kaggle Notebook](https://www.kaggle.com/code/aman99123/grpo-rl-trainer)
+[📺 Demo Video](https://www.youtube.com/watch?v=hL7n5TU7Bm4) · [📖 Engineering Blog](./blog.md) · [🤗 Live HF Space](https://huggingface.co/spaces/garv1garv/Conversational-Health-Care-Agents)
 
 </div>
 
@@ -192,7 +192,7 @@ docker run -p 7860:7860 -e GROQ_API_KEY="your_key" ermap
 ### Option 2 — Local Python
 ```bash
 # Clone & install
-git clone https://github.com/YOUR_USERNAME/Conversational-Health-Care-Agents.git
+git clone https://github.com/garv1garv/Conversational-Health-Care-Agents.git
 cd Conversational-Health-Care-Agents
 pip install -r requirements.txt
 
@@ -285,7 +285,7 @@ python -m ER_MAP.test_smoke
 
 <div align="center">
 
-**Built with ❤️ by Team PPIx3**
+**Built with ❤️ by Garv**
 
 *If this project helps your research, please ⭐ the repo!*
 

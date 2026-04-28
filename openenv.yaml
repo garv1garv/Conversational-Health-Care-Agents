@@ -30,7 +30,7 @@ env:
       - "openenv-core>=0.1.0"
 
   metadata:
-    authors: ["ER-MAP Team"]
+    authors: ["Garv"]
     license: "MIT"
     tags: ["medical", "multi-agent", "triage", "rl", "llm"]
     hackathon: "Meta PyTorch OpenEnv Hackathon 2026"

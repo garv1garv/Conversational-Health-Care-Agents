@@ -4,7 +4,7 @@
 > 
 > When chaos enters the emergency room, detailed plans fall apart. Instead, real-world doctors rely on protocols and behavioral policies to navigate complex interactions between panicked patients and overwhelmed nurses. Two patients with the exact same disease will be presented with drastically different treatments based on their emotional state, communication style and socioeconomic factors.
 
-We aren't just introducing agentic reinforcement learning for medical data. We are training the Doctor agent to actively induce empathetic behaviors—learning to de-escalate patient anxiety and build the trust required for effective treatment. To our knowledge, **no such open-source infrastructure currently exists.**
+I'm not just introducing agentic reinforcement learning for medical data. I'm training the Doctor agent to actively induce empathetic behaviors—learning to de-escalate patient anxiety and build the trust required for effective treatment. To my knowledge, **no such open-source infrastructure currently exists.**
 
 Big talks, right? Let's go to the demo video!
 
@@ -69,14 +69,14 @@ flowchart TD
 ### Dual-Judge Architecture: The "Anti-Sycophant" Protocol
 **What stops the Doctor from auto-discharging a patient without a diagnosis?** In a standard RL environment, the model might "hack" the reward by being incredibly polite to farm empathy points while ignoring the medical crisis. 
 
-Our moat is the **Dual-Judge Architecture**. We deploy two independent 70B Llama-3.3-Versatile judges with non-overlapping rubrics:
+Our moat is the **Dual-Judge Architecture**. I deploy two independent 70B Llama-3.3-Versatile judges with non-overlapping rubrics:
 *   **The Empathy Judge (Very Heavy LLM)**: Operates turn-by-turn. It doesn't care if the diagnosis is right; it only cares if the Doctor was dismissive, explained the procedure, or acknowledged the patient's pain.
 *   **The Medical Judge (Very Heavy LLM)**: Operates at the terminal step. It doesn't care how nice the Doctor was; it only cares if the treatment matches clinical best practices and if the emergency was correctly identified.
 
 Hacking one doesn't satisfy the other. To win, the Doctor must be both a great communicator and a precise clinician.
 
 ### Asymmetric Compute Routing
-We made a deliberate design choice to use **Asymmetric Compute Routing**. Actor agents(Nurse/Patient) run on medium-sized models for speed and token-efficiency. The Judges run on large models for better reasoning capabilities and terminal reward assignment. Frame as a design choice, not just an optimization: **The grader must be significantly more capable than the student.** This ensures the reward signal is "wise" enough to guide the doctor agent.
+I made a deliberate design choice to use **Asymmetric Compute Routing**. Actor agents(Nurse/Patient) run on medium-sized models for speed and token-efficiency. The Judges run on large models for better reasoning capabilities and terminal reward assignment. Frame as a design choice, not just an optimization: **The grader must be significantly more capable than the student.** This ensures the reward signal is "wise" enough to guide the doctor agent.
 
 ### The 11-Component Reward Engine
 The environment's reward is a composite of **eleven named components**, ensuring the model learns a balanced policy rather than a single-minded shortcut.
@@ -137,7 +137,7 @@ flowchart TD
 ```
 
 ### Anti-Reward-Hacking Measures (Penalize model for being oversmart)  
-We've enumerated six specific defenses against model shortcuts:
+I've enumerated six specific defenses against model shortcuts:
 1.  **Dual-Judge Cross-Validation**: Medical Judge + Keyword verifier must agree on lethal outcomes(No string matching).
 2.  **Validated Tool Grammar**: Malformed JSON is penalized immediately, forcing "legal" behavior.
 3.  **Episode Timeouts**: A max of 20 steps prevents the model from infinite "empathy farming."
@@ -158,7 +158,7 @@ Total: **75 episodes** on a single Kaggle T4. That sounds small. It is. But each
 
 ## Dataset Creation: Synthetic Diversity & Behavioral Friction (Our USP)
 
-To train an agent for sucha a scenario, we needed more than just a list of symptoms. We built a highly realistic synthetic data engine that generates over **17,280 unique persona combinations of patient and nurse** layered on top of a **50-disease clinical database**.
+To train an agent for such a scenario, I needed more than just a list of symptoms. I built a highly realistic synthetic data engine that generates over **17,280 unique persona combinations of patient and nurse** layered on top of a **50-disease clinical database**.
 
 ### Synthetic Disease & Emergency Pool
 Our environment draws from 50 distinct diseases categorized into 10 clinical classes (e.g., Cardiovascular, Trauma, Toxicology...). Each disease is more than a label; it includes:
@@ -178,11 +178,11 @@ The primary impact of this behavioral diversity is that the model cannot simply 
 
 ## Reward & Training Pipeline
 
-Now that we've described *what* the environment rewards, here's *how* those rewards flow through our custom GRPO training loop to actually update the Doctor's weights. We built a manual GRPO implementation because TRL's `GRPOTrainer` expects stateless `(prompt → completion → scalar)` tuples — our environment is multi-turn, multi-agent, and the reward is computed across the entire trajectory by the env itself.
+Now that I've described *what* the environment rewards, here's *how* those rewards flow through my custom GRPO training loop to actually update the Doctor's weights. I built a manual GRPO implementation because TRL's `GRPOTrainer` expects stateless `(prompt → completion → scalar)` tuples — my environment is multi-turn, multi-agent, and the reward is computed across the entire trajectory by the env itself.
 
 ### End-to-End Pipeline
 
-The pipeline below shows every stage from "scheduler picks a phase" to "AdamW updates LoRA weights." Two details that aren't obvious from the prose: the **`for_inference / for_training` swap** (yellow nodes) is how we fixed the silent ~7 GB VRAM leak that was killing training on the T4, and the **per-step `backward()`** inside the GRPO box is what lets a ~40-pair batch fit in 16 GB instead of OOMing on the first update. Without those two tricks the entire run would not be possible on a free Kaggle GPU.
+The pipeline below shows every stage from "scheduler picks a phase" to "AdamW updates LoRA weights." Two details that aren't obvious from the prose: the **`for_inference / for_training` swap** (yellow nodes) is how I fixed the silent ~7 GB VRAM leak that was killing training on the T4, and the **per-step `backward()`** inside the GRPO box is what lets a ~40-pair batch fit in 16 GB instead of OOMing on the first update. Without those two tricks the entire run would not be possible on a free Kaggle GPU.
 
 ```mermaid
 flowchart TD
@@ -239,10 +239,10 @@ The critical design decision is the **60/40 process-to-terminal reward split**. 
 
 ## Evidence of Training — Showing Improvement in Rewards
 
-We don't just show a curve; we show a comparison against a direct baseline on identical clinical scenarios.
+I don't just show a curve; I show a comparison against a direct baseline on identical clinical scenarios.
 
 ### Baseline vs. Trained Comparison
-To quantify improvement, we ran an untrained 8B model (Llama-3.1-8B-Instruct) through the exact same 75-episode curriculum. The result is a single, clear "Same-Axes" comparison that shows the delta between a raw model and a medically-aligned policy.
+To quantify improvement, I ran an untrained 8B model (Llama-3.1-8B-Instruct) through the exact same 75-episode curriculum. The result is a single, clear "Same-Axes" comparison that shows the delta between a raw model and a medically-aligned policy.
 
 *   **Baseline (Untrained)**: High variance, frequent "Redundancy" penalties, and near-zero empathy scores.
 *   **Trained (After GRPO)**: Smooth upward trend, consistent clinical milestones, and a clear shift toward empathetic negotiation in Phase 3.
@@ -251,7 +251,7 @@ To quantify improvement, we ran an untrained 8B model (Llama-3.1-8B-Instruct) th
 *Figure 1: Baseline performance (no RL) showing zero win rates across all phases, serving as the starting point for training.*
 
 ### Per-Phase Dashboard Analysis
-We generated per-phase dashboards to capture the multidimensional nature of the learning process:
+I generated per-phase dashboards to capture the multidimensional nature of the learning process:
 1.  **Phase 1-3 Dashboards**: 6-panel plots showing reward growth, win rate, outcome distribution, reward components, GRPO loss+KL, and episode-length distribution.
 2.  **Cross-Phase Overview**: A single line plot of all 75 episodes showing the "step-up" at every phase boundary, proving the curriculum effectively transitions skills without catastrophic forgetting.
 
@@ -289,7 +289,7 @@ The most granular proof of improvement is the lift across individual reward comp
 | **Consent** | -0.30 | 0.15 | +150% |
 
 ### Moments of Learning
-We annotated two critical "aha!" moments on our plots:
+I annotated two critical "aha!" moments on my plots:
 *   **The First Win**: The episode where the model first achieves a perfect "WIN" outcome with correct diagnosis and treatment.
 *   **The Empathy Flip**: The episode where the cumulative empathy reward consistently crosses above zero, indicating the model has learned to avoid dismissive language.
 
@@ -297,11 +297,11 @@ We annotated two critical "aha!" moments on our plots:
 *Figure 4: Overall reward growth and outcome distribution across the training run.*
 
 ### A Compute-Honest Note
-**75 episodes ≈ ~5,000 LLM-generated feedback signals.** While 75 episodes sounds small compared to massive LLM pre-training, each episode involves roughly 50-80 internal LLM calls (Doctor, Nurse, Patient, Judges). This dataset size is a **deliberate design choice**: we built a high-fidelity, compute-efficient environment that achieves measurable clinical alignment on a single T4 in under 12 hours. We could have run 1,000 episodes of a toy environment. Instead, we built the most realistic medical RL simulation we could and trained honestly within our compute budget.
+**75 episodes ≈ ~5,000 LLM-generated feedback signals.** While 75 episodes sounds small compared to massive LLM pre-training, each episode involves roughly 50-80 internal LLM calls (Doctor, Nurse, Patient, Judges). This dataset size is a **deliberate design choice**: I built a high-fidelity, compute-efficient environment that achieves measurable clinical alignment on a single T4 in under 12 hours. I could have run 1,000 episodes of a toy environment. Instead, I built the most realistic medical RL simulation I could and trained honestly within my compute budget.
 
 
 ## Acknowledgements
 
 Hugging Face for the credits and the Hub. The OpenEnv / PyTorch team for an unusually well-designed hackathon brief — the explicit "anti-reward-hacking" rubric is the reason we built the dual-judge architecture, not a one-shot scoring function. Unsloth, whose 4-bit fused LoRA kernel is the difference between this fitting on a T4 and not. Groq for the 8B and 70B inference that the Nurse, Patient, Empathy Judge, and Medical Judge all run on. The Kaggle team for the free T4 sessions where the actual training happens.
 
-— The ER-MAP team
+— Garv

@@ -28,7 +28,7 @@ setup(
             "wandb>=0.16.0",
         ],
     },
-    author="ER-MAP Team",
+    author="Garv",
     description="Emergency Response Multi-Agent Pipeline",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
